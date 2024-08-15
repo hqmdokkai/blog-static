@@ -1,13 +1,39 @@
 <!DOCTYPE html>
-<html>
-  <head>
-    <title>Admin</title>
-    <meta charset="utf-8">
-    <script src="https://cdn.jsdelivr.net/npm/netlify-cms@latest/dist/netlify-cms.js"></script>
-  </head>
-  <body>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+</head>
+<body>
+    <div id="app">
+        <h1>Admin Dashboard</h1>
+        <!-- Form for creating new posts -->
+        <form @submit.prevent="createPost">
+            <input type="text" v-model="newPostTitle" placeholder="Post Title" required>
+            <textarea v-model="newPostContent" placeholder="Post Content" required></textarea>
+            <button type="submit">Create Post</button>
+        </form>
+        <div v-if="message">{{ message }}</div>
+    </div>
     <script>
-      CMS.init();
+        new Vue({
+            el: '#app',
+            data: {
+                newPostTitle: '',
+                newPostContent: '',
+                message: ''
+            },
+            methods: {
+                createPost() {
+                    // Implement the logic to upload the Markdown file to GitHub
+                    // For example, use GitHub API to create a new file in the repository
+                    this.message = 'Post created successfully!';
+                }
+            }
+        });
     </script>
-  </body>
+</body>
 </html>
