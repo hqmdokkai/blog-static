@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blog</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <a class="navbar-brand" href="#">My Blog</a>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link" href="admin/index.html">Admin</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        <div id="posts-container" class="row">
+            <!-- Blog posts will be dynamically loaded here -->
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.20.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.20.0/firebase-storage.js"></script>
+    <script>
+        const firebaseConfig = {
+          apiKey: "YOUR_API_KEY",
+          authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
+          projectId: "YOUR_PROJECT_ID",
+          storageBucket: "YOUR_PROJECT_ID.appspot.com",
+          messagingSenderId: "YOUR_SENDER_ID",
+          appId: "YOUR_APP_ID"
+        };
+        
+        firebase.initializeApp(firebaseConfig);
+        const storage = firebase.storage();
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const postsContainer = document.getElementById('posts-container');
+
+            // Lấy danh sách các bài viết từ Firebase Storage
+            const listRef = storage.ref().child('posts');
+
+            listRef.listAll().then((res) => {
+                res.items.forEach((itemRef) => {
+                    itemRef.getDownloadURL().then((url) => {
+                        fetch(url)
+                          .then(response => response.text())
+                          .then(content => {
+                              const postDiv = document.createElement('div');
+                              postDiv.classList.add('col-md-4');
+                              postDiv.innerHTML = `
+                                  <div class="card mb-4">
+                                      <div class="card-body">
+                                          <h5 class="card-title">${itemRef.name.replace('.md', '')}</h5>
+                                          <p class="card-text">${content}</p>
+                                      </div>
+                                  </div>
+                              `;
+                              postsContainer.appendChild(postDiv);
+                          });
+                    });
+                });
+            }).catch((error) => {
+                console.error('Error fetching posts:', error);
+            });
+        });
+    </script>
+</body>
+</html>
