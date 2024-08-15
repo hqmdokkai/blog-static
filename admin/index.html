@@ -10,7 +10,6 @@
 <body>
     <div id="app">
         <h1>Admin Dashboard</h1>
-        <!-- Form for creating new posts -->
         <form @submit.prevent="createPost">
             <input type="text" v-model="newPostTitle" placeholder="Post Title" required>
             <textarea v-model="newPostContent" placeholder="Post Content" required></textarea>
@@ -28,8 +27,18 @@
             },
             methods: {
                 createPost() {
-                    // Implement the logic to upload the Markdown file to GitHub
-                    // For example, use GitHub API to create a new file in the repository
+                    // Save post content to a file and move it to the `admin/uploads` directory
+                    const content = `---
+layout: post
+title: "${this.newPostTitle}"
+date: ${new Date().toISOString()}
+categories: [blog]
+---
+
+${this.newPostContent}`;
+                    
+                    // This part should be handled by backend or manually
+                    // E.g., Save the content to a temporary directory to be picked up by GitHub Actions
                     this.message = 'Post created successfully!';
                 }
             }
